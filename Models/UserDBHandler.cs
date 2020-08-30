@@ -16,6 +16,39 @@ namespace WebApplication.Models
             string connection = ConfigurationManager.ConnectionStrings["dbconnection"].ConnectionString.ToString();
             connect = new SqlConnection(connection);
         }
+        public bool Login(User user)
+        {
+            Connection();
+            try
+            {
+                //always parametirized queries
+                SqlCommand cmd = new SqlCommand("SELECT * FROM Users WHERE Email =@email AND Password =@password", connect);
+                cmd.Parameters.AddWithValue("@email", user.Email.Trim());
+                cmd.Parameters.AddWithValue("@password", user.Password.Trim());
+
+                //create a sql data adapter
+                SqlDataAdapter data = new SqlDataAdapter(cmd);
+                //create a datatable
+                DataTable dataTable = new DataTable();
+
+                //open connection
+                connect.Open();
+
+                //fill data table with data
+                data.Fill(dataTable);
+
+                //close connection
+                connect.Close();
+                if (dataTable.Rows.Count >= 1)
+                    return true;
+                else
+                    return false;
+            }
+            catch
+            {
+                throw;
+            }
+        }
         public bool RegisterUser(User user)
         {
             Connection();

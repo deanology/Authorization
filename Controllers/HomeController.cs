@@ -12,12 +12,6 @@ namespace WebApplication.Controllers
 {
     public class HomeController : Controller
     {
-        private SqlConnection connect;
-        private void Connection()
-        {
-            string connection = ConfigurationManager.ConnectionStrings["dbconnection"].ConnectionString;
-            connect = new SqlConnection(connection);
-        }
         [HttpGet]
         public ActionResult Login()
         {
@@ -27,6 +21,28 @@ namespace WebApplication.Controllers
         [HttpPost]
         public ActionResult Login(User user)
         {
+            try
+            {
+                if (ModelState.IsValid)
+                {
+                    UserDBHandler handler = new UserDBHandler();
+                    if (handler.Login(user))
+                    {
+                        //set session
+                        Session["Fullname"] = user.Email.Trim();
+                        return RedirectToAction("Dashboard");
+                    }
+                    else
+                    {
+                        ViewBag.error = "Login Failed";
+                        return RedirectToAction("Login");
+                    }
+                }
+            }
+            catch
+            {
+                return View(user);
+            }
             return View();
         }
         [HttpGet]
@@ -59,6 +75,11 @@ namespace WebApplication.Controllers
                 return View(user);
             }
             return View();
+        }
+        public ActionResult Logout()
+        {
+            Session.Clear(); //remove session
+            return RedirectToAction("Login");
         }
         public ActionResult Index()
         {

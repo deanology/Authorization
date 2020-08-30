@@ -1,0 +1,19 @@
+﻿
+@{
+    ViewBag.Title = "Dashboard";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+    <section class="welcome-section padding">
+        <div class="container">
+            <div class="row justify-content-center align-items-center">
+                @if (Session["Fullname"] != null)
+                {
+                    
+                    <p>Welcome @Session["Fullname"].ToString()</p>
+                    <p>Your Email Address is @Session["Email"].ToString()</p>
+                }
+            </div>
+        </div>
+    </section>
+

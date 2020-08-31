@@ -7,10 +7,8 @@
     <section class="welcome-section padding">
         <div class="container">
             <div class="row justify-content-center align-items-center">
-                @if (Session["Fullname"] != null)
+                @if (Session["email"] != null)
                 {
-                    
-                    <p>Welcome @Session["Fullname"].ToString()</p>
                     <p>Your Email Address is @Session["Email"].ToString()</p>
                 }
             </div>

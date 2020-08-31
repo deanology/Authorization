@@ -17,11 +17,11 @@ namespace WebApplication.Models
             public string Password { get; set; }
             //************************************************//
             [Required(ErrorMessage = "Confirmed Password is Required.")]
-            [Compare("Password", ErrorMessage = "Password do not match")]
+            [System.ComponentModel.DataAnnotations.Compare("Password", ErrorMessage = "Password do not match")]
             public string ConfirmPassword { get; set; }
             //************************************************//
             [Required(ErrorMessage = "Email address is Required.")]
-            [EmailAddress(ErrorMessage = "Invalid Email Address")]
+            [RegularExpression(@"[A-Za-z0-9._%)]+@[A-Za-z0-9,-]+\.[A-Za-z]{2,4}", ErrorMessage = "Invalid Email Address")]
             public string Email { get; set; }
             //************************************************//
             public DateTime RegistrationDate { get; set; }

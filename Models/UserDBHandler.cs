@@ -5,6 +5,8 @@ using System.Web;
 using System.Data;
 using System.Data.SqlClient;
 using System.Configuration;
+using System.Security.Cryptography;
+using System.Text;
 
 namespace WebApplication.Models
 {
@@ -16,15 +18,15 @@ namespace WebApplication.Models
             string connection = ConfigurationManager.ConnectionStrings["dbconnection"].ConnectionString.ToString();
             connect = new SqlConnection(connection);
         }
-        public bool Login(User user)
+        public bool Login(Login login)
         {
             Connection();
             try
             {
                 //always parametirized queries
                 SqlCommand cmd = new SqlCommand("SELECT * FROM Users WHERE Email =@email AND Password =@password", connect);
-                cmd.Parameters.AddWithValue("@email", user.Email.Trim());
-                cmd.Parameters.AddWithValue("@password", user.Password.Trim());
+                cmd.Parameters.AddWithValue("@email", login.Email.Trim());
+                cmd.Parameters.AddWithValue("@password", login.Password.Trim());
 
                 //create a sql data adapter
                 SqlDataAdapter data = new SqlDataAdapter(cmd);
@@ -60,8 +62,8 @@ namespace WebApplication.Models
 
                 //assigning values to the placeholders 
                 cmd.Parameters.AddWithValue("@email", user.Email.Trim());
-                cmd.Parameters.AddWithValue("@password", user.Password.Trim());
-                cmd.Parameters.AddWithValue("@confirm_password", user.ConfirmPassword.Trim());
+                cmd.Parameters.AddWithValue("@password", GetMD5(user.Password.Trim()));
+                cmd.Parameters.AddWithValue("@confirm_password", GetMD5(user.ConfirmPassword.Trim()));
                 cmd.Parameters.AddWithValue("@fullname", user.Fullname.Trim());
 
                 //open connection
@@ -77,6 +79,19 @@ namespace WebApplication.Models
             {
                 throw;
             }
+        }
+        public static string GetMD5(string str)
+        {
+            MD5 mD5 = new MD5CryptoServiceProvider();
+            byte[] fromData = Encoding.UTF8.GetBytes(str);
+            byte[] targetData = mD5.ComputeHash(fromData);
+            string byte2String = null;
+
+            for (int i = 0; i < targetData.Length; i++)
+            {
+                byte2String += targetData[i].ToString("x2");
+            }
+            return byte2String;
         }
     }
 }

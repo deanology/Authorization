@@ -19,17 +19,17 @@ namespace WebApplication.Controllers
             return View();
         }
         [HttpPost]
-        public ActionResult Login(User user)
+        public ActionResult Login(Login login)
         {
             try
             {
                 if (ModelState.IsValid)
                 {
                     UserDBHandler handler = new UserDBHandler();
-                    if (handler.Login(user))
+                    if (handler.Login(login))
                     {
                         //set session
-                        Session["Fullname"] = user.Email.Trim();
+                        Session["email"] = login.Email.Trim();
                         return RedirectToAction("Dashboard");
                     }
                     else
@@ -41,7 +41,7 @@ namespace WebApplication.Controllers
             }
             catch
             {
-                return View(user);
+                return View(login);
             }
             return View();
         }
@@ -81,13 +81,17 @@ namespace WebApplication.Controllers
             Session.Clear(); //remove session
             return RedirectToAction("Login");
         }
+      
         public ActionResult Index()
         {
             return View();
         }
         public ActionResult Dashboard()
         {
-            return View();
+            if (Session["email"] != null)
+                return View();
+            else
+                return RedirectToAction("Login");
         }
         public ActionResult About()
         {

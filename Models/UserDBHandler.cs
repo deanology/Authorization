@@ -26,7 +26,7 @@ namespace WebApplication.Models
                 //always parametirized queries
                 SqlCommand cmd = new SqlCommand("SELECT * FROM Users WHERE Email =@email AND Password =@password", connect);
                 cmd.Parameters.AddWithValue("@email", login.Email.Trim());
-                cmd.Parameters.AddWithValue("@password", login.Password.Trim());
+                cmd.Parameters.AddWithValue("@password", GetMD5(login.Password.Trim()));
 
                 //create a sql data adapter
                 SqlDataAdapter data = new SqlDataAdapter(cmd);
